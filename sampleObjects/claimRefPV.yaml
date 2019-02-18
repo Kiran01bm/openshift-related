@@ -1,0 +1,21 @@
+# You may also want your cluster administrator to "reserve" the volume for only your claim so that nobody else’s claim can bind to it before yours does. 
+# In this case, the administrator can specify the PVC in the PV using the claimRef field. 
+# The PV will only be able to bind to a PVC that has the same name and namespace specified in claimRef. 
+# The PVC’s access modes and resource requests must still be satisfied in order for the PV and PVC to be bound, though the label selector is ignored.
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv0001
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+  - ReadWriteOnce
+  nfs:
+    path: /tmp
+    server: 172.17.0.2
+  persistentVolumeReclaimPolicy: Retain
+  claimRef:
+    name: claim1
+    namespace: default
