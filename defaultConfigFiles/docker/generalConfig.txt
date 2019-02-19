@@ -1,0 +1,9 @@
+
+# Using the ADD_REGISTRY variable to this file puts any registry you add at the front of the list searched. However, if a requested image is not found in any of the registries you add, the Docker Hub Registry still is searched next.
+ADD_REGISTRY='--add-registry registry.access.redhat.com'
+
+# By setting the BLOCK_REGISTRY variable, you can block access to any registry you choose. Of course, at the moment only the Docker Hub Registry is searched by default. So, to block the Docker Hub Registry from search and pull requests, you could use the following line.
+BLOCK_REGISTRY='--block-registry docker.io'
+
+# The INSECURE_REGISTRY=‘--insecure-registry’ variable does not explicitly allow or disallow a registry. This is a specific case where someone wants to use the local Docker client to pull an image from a registry that provides HTTPS communication, but the client doesn’t want to validate the certificate. Uncommenting the variable and adding the name of the insecure registry to that line allows the docker command to pull/push from that registry without certificate validation.
+INSECURE_REGISTRY='--insecure-registry myreg.example.com'
