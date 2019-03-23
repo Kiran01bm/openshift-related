@@ -79,5 +79,5 @@ To impersonate:
 1. For example, oc delete nodes --all is forbidden, but oc delete nodes --all as system:admin is allowed
 2. Can add user to group using oadm policy add-cluster-role-to-user sudoer <username>
 
-Ref Diagrams:
+## Ref Diagrams:
 ![Alt text](rbacbinding.png?raw=true "")
