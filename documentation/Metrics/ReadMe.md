@@ -13,10 +13,11 @@
 ## Heapster:
 
 1. The kubelet exposes metrics that can be collected and stored in back-ends by Heapster.
-2. Heapster retrieves a list of all nodes from the master server\
+   Note: cAdvisor on node gathers CPU and memory information for pods and makes it available at /stats endpoint
+2. Heapster retrieves a list of all nodes from the master server.
 3. Then contacts each node individually through the /stats endpoint.
 4. From there, Heapster scrapes the metrics for CPU, memory and network usage.
-5. Hepaster then exports them into Hawkular Metrics.
+5. Hepaster then exports them into Hawkular and Hawkular stores the metrics into the Cassandra backend.
 6. The storage volume metrics available on the kubelet are not available through the /stats endpoint, but are available through the /metrics endpoint.
 
 
@@ -72,3 +73,7 @@ Testing found that the heapster metrics component is capable of handling up to 2
 By default, Hawkular tries to find Elasticsearch on its default place (namespace logging, pod logging-es) at every boot. If Aggregated Logging is installed after Hawkular, the Hawkular Metrics pod might need to be restarted in order to recognize the new Elasticsearch server.
 
 OCP Platform installation by default installs Hawkular in openshift-infra before installing Logging project.
+
+
+## Diagrams
+![Alt text](metrics.png?raw=true "")
