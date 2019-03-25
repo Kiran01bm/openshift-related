@@ -15,7 +15,7 @@
 3. Deny by default
 
 ## Service Account Naming Convention:
-1. ServiceAccount username derived from project and name: system:serviceaccount:<project>:<name>
+1. ServiceAccount username derived from project and name: **system:serviceaccount:project:name**
 
 ## Service account Membership:
 Every Service account is also a member of two groups:
