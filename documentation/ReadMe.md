@@ -51,10 +51,11 @@
 24. **Static pods** are managed directly by kubelet/node service daemon on a specific node, without API server observing it.
 
 25. Quality of Service **(QoS)** classes: For the sake of brevity, suffice it to say that there is a complex and powerful system of Quality of Service and resource management in OpenShift. Understanding the types of workloads that will be run in your cluster will be important to coming up with sensible values for all of these settings.
+```
 	Guaranteed - If limits and optionally requests are set (not equal to 0) for all resources and they are equal, then the container is classified as Guaranteed.
 	Burstable - If requests and optionally limits are set (not equal to 0) for all resources, and they are not equal, then the container is classified as Burstable.
 	BestEffort - If requests and limits are not set for any of the resources, then the container is classified as BestEffort.
-
+```
 26. **DaemonSets** should not create **BestEffort** pods to avoid being identified as a candidate pod for eviction. Instead DaemonSets should ideally launch Guaranteed pods.
 
 27. Memory is an incompressible resource, so in low memory situations, containers that have the lowest priority are killed first.
@@ -77,7 +78,8 @@
 	* lifecycle hooks
 	* Custom deployment strategies
 
-34. Deployment Triggers
+34. Deployment Trigger
+```
 	1 - Config Change - When Pod Template changes (or , i.e RC template of the DC changes) new RC will be created and the deployment POD handles the logic of rolling out new version of the application i.e scaling down old RC and scaling up the new RC 
 
 		* Revision history limit is the limit of old replication controllers you want to keep around for rolling back. May be omitted. If omitted, old replication controllers will not be cleaned up.
@@ -85,10 +87,11 @@
 	2 - ImageChange Trigger - The ImageChange trigger results in a new replication controller whenever the content of an image stream tag changes (when a new version of the image is pushed).
 
 		* When the tag value of an image stream changes new RC will be created
+```
 
-35. *Graceful Termination* - On shutdown, OpenShift Container Platform will send a *TERM* signal to the processes in the container. Application code, on receiving SIGTERM, should stop accepting new connections. This will ensure that load balancers route traffic to other active instances. The application code should then wait until all open connections are closed (or gracefully terminate individual connections at the next opportunity) before exiting. After the graceful termination period expires, a process that has not exited will be sent the *KILL* signal, which immediately ends the process. The terminationGracePeriodSeconds attribute of a pod or pod template controls the graceful termination period (default 30 seconds) and may be customized per application as necessary.
+35. **Graceful Termination** - On shutdown, OpenShift Container Platform will send a *TERM* signal to the processes in the container. Application code, on receiving SIGTERM, should stop accepting new connections. This will ensure that load balancers route traffic to other active instances. The application code should then wait until all open connections are closed (or gracefully terminate individual connections at the next opportunity) before exiting. After the graceful termination period expires, a process that has not exited will be sent the *KILL* signal, which immediately ends the process. The terminationGracePeriodSeconds attribute of a pod or pod template controls the graceful termination period (default 30 seconds) and may be customized per application as necessary.
 
-36. Deployment Strategies - 2 Deployment strategies i.e using Deployment Config and other using the Routes. If we use DC then all routes used by the App are impacted but if we use Route strategy only the said Route is going to be impacted.
+36. Deployment Strategies - **2 Deployment strategies** i.e using Deployment Config and other using the Routes. If we use DC then all routes used by the App are impacted but if we use Route strategy only the said Route is going to be impacted.
 ```
 DC Based:
 	Rolling - Default option if none mentioned. And in Openshift it is Canary
