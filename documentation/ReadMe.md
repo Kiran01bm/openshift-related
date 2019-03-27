@@ -6,67 +6,69 @@
 
 3. Kubernetes namespace provide a mechanism to scope cluster resources. OpenShift Project is a collection of Resources enabling RBAC and Traffic control to be built into them.
 
-4. Services provide stable network identity. 
+4. Services provide **stable network identity**. Naming convention - $(service name).$(namespace).svc.cluster.local
 
-5. Routes bypass the service networks and access pods directly.
+5. Routes **bypass** the service networks and access pods directly.
 
 6. DC also has the provision to define strategy to transition from current version to the new version. The Deployer POD manages the deployment i.e Deployer Pod implements the deployment Logic (calling lifecyle hooks, transitioning replication controllers and Tracking Pods).
 
 7. OCP Routers Support HTTPS with SNI and TLS with SNI.
 
-8. oc new-app creates application by specifying source code, image, and/or template. New app creation workflow/logic is implemented by the Builder Pod
+8. oc new-app creates application by specifying source code, image, and/or template. New app creation workflow/logic is implemented by the **Builder Pod**
 
 9. For Quotas (be it single project Quota or Multiproject quota defined by a ClusterResourceQuota) to be effective, you must create Limit Ranges which handles the Default problem very well
 
-10. When you *delete the StatefulSet*, it does not touch the persistent volumes nor the service, so we have to take care of that ourselves
-
+10. When you **delete the StatefulSet**, it does not touch the persistent volumes nor the service, so we have to take care of that ourselves
+```
+    StatefulSet Pods have a stable and unique identity that is comprised of an ordinal, a stable network identity, and stable storage. 
+```
 11. CPU requests you set in Kubernetes or OpenShift is a CPU-Feature agnostic setting i.e 200 millicores of a faster processor means higher computational speed and throughput
 
 12. Master - API Server, Controlloer Server Manager, Scheduler, Etcd
 
 13. All of the Master components except API server works in a Leader Election mode with one Leader and many followers. API Server is stateless and runs in a Active-Active manner
 
-14. *S2I* relies on ONBUILD Docker instruction.
+14. **S2I** relies on ONBUILD Docker instruction.
 
-15. *Authorization evaluation* - Cluster-wide allow rules checked --> Locally bound allow rules checked --> Deny by default
+15. **Authorization evaluation** - Cluster-wide allow rules checked --> Locally bound allow rules checked --> Deny by default
 
 16. Service account naming convention - system:serviceaccount:<project>:<name>
 
 17. Every service account is part of the following groups - system:serviceaccounts: and system:serviceaccounts:<project>:
 
-18. OpenShift master includes *OAUTH* server which implements OAUTH2.0 but not OIDC. It uses the Authorization Code Flow.
+18. OpenShift master includes **OAUTH** server which implements OAUTH2.0 but not OIDC. It uses the Authorization Code Flow.
 
-19.  FluentD runs as a *Privileged Container* with HOSTPATH PV's
+19.  FluentD runs as a **Privileged Container** with HOSTPATH PV's
 
-20. User can *impersonate* another user or a service account if the authorization to impersonate is granted
+20. User can **impersonate** another user or a service account if the authorization to impersonate is granted
 
-21. *Liveness Probe* - Important in scenarios where the Container is UP but not doing anything worthwhile
+21. **Liveness Probe** - Important in scenarios where the Container is UP but not doing anything worthwhile
 
-22. *Readiness Probe* - Used by various Controllers to determine if they can be added to the pool of active workers.
+22. **Readiness Probe** - Used by various Controllers to determine if they can be added to the pool of active workers.
 
-23. Failing to disable *swap* results in nodes not recognizing that they are experiencing MemoryPressure, resulting in pods not receiving the memory they made in their scheduling request. As a result, additional pods are placed on the node to further increase memory pressure, ultimately increasing your risk of experiencing a system out of memory (OOM) event.
+23. Failing to disable **swap** results in nodes not recognizing that they are experiencing MemoryPressure, resulting in pods not receiving the memory they made in their scheduling request. As a result, additional pods are placed on the node to further increase memory pressure, ultimately increasing your risk of experiencing a system out of memory (OOM) event.
 
-24. *Static pods* are managed directly by kubelet/node service daemon on a specific node, without API server observing it.
+24. **Static pods** are managed directly by kubelet/node service daemon on a specific node, without API server observing it.
 
-25. Quality of Service *(QoS)* classes: For the sake of brevity, suffice it to say that there is a complex and powerful system of Quality of Service and resource management in OpenShift. Understanding the types of workloads that will be run in your cluster will be important to coming up with sensible values for all of these settings.
+25. Quality of Service **(QoS)** classes: For the sake of brevity, suffice it to say that there is a complex and powerful system of Quality of Service and resource management in OpenShift. Understanding the types of workloads that will be run in your cluster will be important to coming up with sensible values for all of these settings.
 	Guaranteed - If limits and optionally requests are set (not equal to 0) for all resources and they are equal, then the container is classified as Guaranteed.
 	Burstable - If requests and optionally limits are set (not equal to 0) for all resources, and they are not equal, then the container is classified as Burstable.
 	BestEffort - If requests and limits are not set for any of the resources, then the container is classified as BestEffort.
 
-26. *DaemonSets* should not create *BestEffort* pods to avoid being identified as a candidate pod for eviction. Instead DaemonSets should ideally launch Guaranteed pods.
+26. **DaemonSets** should not create **BestEffort** pods to avoid being identified as a candidate pod for eviction. Instead DaemonSets should ideally launch Guaranteed pods.
 
 27. Memory is an incompressible resource, so in low memory situations, containers that have the lowest priority are killed first.
 
-28. Controlling *Node Condition Oscillation* - If a node is oscillating above and below a soft eviction threshold, but not exceeding its associated grace period, the corresponding node condition oscillates between true and false, which can cause problems for the scheduler.
+28. Controlling **Node Condition Oscillation** - If a node is oscillating above and below a soft eviction threshold, but not exceeding its associated grace period, the corresponding node condition oscillates between true and false, which can cause problems for the scheduler.
 	Example:
 		kubeletArguments:
   		  eviction-pressure-transition-period="5m"
 
-29. *Node Resource Reservation*: [Allocatable] = [Node Capacity] - [kube-reserved] - [system-reserved] - [Hard-Eviction-Thresholds]
+29. **Node Resource Reservation**: [Allocatable] = [Node Capacity] - [kube-reserved] - [system-reserved] - [Hard-Eviction-Thresholds]
 
-30. *Overcommitment* - Some applications lend themselves well to overcommitted environments, and some do not. ex: Most Java applications and applications that use huge pages are examples of applications that would not allow for overcommitment. That memory can not be used for other applications.
+30. **Overcommitment** - Some applications lend themselves well to overcommitted environments, and some do not. ex: Most Java applications and applications that use huge pages are examples of applications that would not allow for overcommitment. That memory can not be used for other applications.
 
-31. Understanding Pod Eviction: Pretty comprehensive and for details refer the documentation.
+31. Understanding **Pod Eviction:** Pretty comprehensive and for details refer the documentation.
 
 32. Understanding Quality of Service and Out of Memory Killer: Pretty comprehensive and for details refer the documentation.
 
