@@ -1,0 +1,13 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: ebsgp2
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: gp2
+  # We dont want to tie volumes to a specific zone but want them to be round-robined across all active zones where the OpenShift Container Platform cluster has a node
+  # zone: us-east-2a
+  encrypted: "false"
+  fsType: xfs

@@ -1,0 +1,211 @@
+[OSEv3:children]
+masters
+nodes
+etcd
+
+# Set variables common for all OSEv3 hosts
+[OSEv3:vars]
+# ssh vars
+ansible_ssh_user=ec2-user
+ansible_sudo=true
+ansible_become=true
+
+
+# deployment type
+openshift_deployment_type=openshift-enterprise
+openshift_release=3.9.68
+
+# Auth (htpasswd auth)
+openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/master/htpasswd'}]
+
+
+# Configure master API and console ports.
+openshift_master_api_port=443
+openshift_master_console_port=443
+
+
+# Set variables common for all OSEv3 hosts
+[OSEv3:vars]
+openshift_disable_check=docker_image_availability,package_availability,docker_storage,memory_availability,package_version,package_update
+#openshift_disable_check=memory_availability,docker_image_availability,package_version
+openshift_override_hostname_check=true
+openshift_enable_unsupported_configurations=true
+
+
+# Enable dynamic provisioning
+openshift_master_dynamic_provisioning_enabled=True
+
+
+# Enable cockpit
+osm_use_cockpit=false
+osm_cockpit_plugins=['cockpit-kubernetes']
+
+# Proxy
+openshift_http_proxy=http://$PROXYHOST:$PROXYPORT
+openshift_https_proxy=http://$PROXYHOST:$PROXYPORT
+openshift_no_proxy='localhost,169.254.169.254,.np.company.com,.$REGION.compute.internal,ocp.example.com,.ocp.example.com'
+
+# Master cluster method
+openshift_master_cluster_method=native
+
+# Cloud Provider Configuration
+#
+# Note: You may make use of environment variables rather than store
+# sensitive configuration within the ansible inventory.
+# For example:
+#openshift_cloudprovider_aws_access_key="{{ lookup('env','AWS_ACCESS_KEY_ID') }}"
+#openshift_cloudprovider_aws_secret_key="{{ lookup('env','AWS_SECRET_ACCESS_KEY') }}"
+#
+openshift_clusterid=$COMPANY.$PROJECT.$ENV
+#
+# AWS (Using IAM Profiles)
+openshift_cloudprovider_kind=aws
+#
+
+
+#######################################################################
+# Defaults and reasons
+#######################################################################
+# debug_level = 2 to log normal information
+# oreg_url = Using the default registry at registry.access.redhat.com
+# openshift_examples_modify_imagestreams = false, no need to modify as we are using the default registry
+# openshift_clock_enabled = true, To prevent masters and nodes in the cluster from going out of sync
+# os_firewall_use_firewalld = Use iptables which is the default. firewalld is not available in atomic so using iptables which is supported on both rhel and atomic hosts
+# openshift_portal_net = Use the default 172.30.0.0/16
+# osm_host_subnet_length = Use the default which is 9
+# openshift_node_proxy_mode = use iptables
+# openshift_web_console_install = install web console
+
+#######################################################################
+
+
+
+###################### Domain names ###########################
+openshift_master_cluster_hostname=internal.ocp.example.com
+openshift_master_cluster_public_hostname=external.ocp.example.com
+openshift_master_default_subdomain=ocp.example.com
+#######################################################################
+
+
+
+###################### Certificates Related ###########################
+#openshift_master_named_certificates=[{"certfile": "/home/ec2-user/ocp.example.com.der", "keyfile": "/home/ec2-user/ocp.example.com.key","names": ["ocp.example.com"]}]
+openshift_master_overwrite_named_certificates=true
+#######################################################################
+
+
+###################### sdn plugin - Multi-tenant plugin ###########################
+# Configure the SDN plugin
+os_sdn_network_plugin_name='redhat/openshift-ovs-multitenant'
+#######################################################################
+
+
+###################### Docker related ###########################
+# docker options
+openshift_docker_options="--log-driver json-file --log-opt max-size=1M --log-opt max-file=3"
+
+# add artifactory registry
+openshift_docker_additional_registries=example.com:443
+#######################################################################
+
+
+###################### Kubelet related ###########################
+# Configure node kubelet arguments
+openshift_node_kubelet_args={'minimum-container-ttl-duration': ['30s'], 'maximum-dead-containers-per-container': ['1'], 'maximum-dead-containers': ['10'], 'pods-per-core': ['10'], 'max-pods': ['250'], 'image-gc-high-threshold': ['80'], 'image-gc-low-threshold': ['70']}
+#######################################################################
+
+
+###################### network cidr blocks for pods and services ###########################
+# Configure SDN cluster network and kubernetes service CIDR blocks.
+osm_cluster_network_cidr=$OCPNETWORKCIDR
+openshift_portal_net=$OCPSERVICENETWORK
+osm_host_subnet_length=11
+#######################################################################
+
+
+###################### Node selectors ###########################
+# Openshift default node selector
+osm_default_node_selector='role=app'
+
+# OpenShift Router Options
+openshift_hosted_router_selector='role=infra'
+openshift_router_selector='role=infra'
+#######################################################################
+
+
+
+###################### Registry ###########################
+openshift_hosted_registry_routehost=registry.ocp.example.com
+openshift_hosted_registry_routetermination=passthrough
+#######################################################################
+openshift_hosted_registry_selector='role=infra'
+openshift_registry_selector='role=infra'
+openshift_hosted_registry_replicas=1
+
+openshift_hosted_registry_storage_kind=object
+openshift_hosted_registry_storage_provider=s3
+#openshift_hosted_registry_storage_s3_accesskey=$ACCESSKEY
+#openshift_hosted_registry_storage_s3_secretkey=$SECRETKEY
+openshift_hosted_registry_storage_s3_bucket=$BUCKETNAME
+openshift_hosted_registry_storage_s3_region=$REGION
+openshift_hosted_registry_storage_s3_chunksize=26214400
+openshift_hosted_registry_storage_s3_rootdirectory=/registry
+openshift_hosted_registry_pullthrough=true
+openshift_hosted_registry_acceptschema2=true
+openshift_hosted_registry_enforcequota=true
+
+
+###################### Metrics ###########################
+openshift_metrics_install_metrics=true
+openshift_metrics_cassandra_storage_type=dynamic
+
+
+###################### Logging ###########################
+openshift_logging_install_logging=true
+openshift_logging_es_pvc_dynamic=true
+
+
+#######################################################################
+# Disable the following:
+#######################################################################
+
+# Disable deployment of the service catalog
+openshift_enable_service_catalog=false
+
+# Disable service broker installation
+ansible_service_broker_install=false
+
+# Disable template service broker installation
+template_service_broker_install=false
+
+# Configure logrotate scripts (https://github.com/nickhammond/ansible-logrotate)
+logrotate_scripts=[{"name": "syslog", "path": "/var/log/cron\n/var/log/maillog\n/var/log/messages\n/var/log/secure\n/var/log/spooler\n", "options": ["daily", "rotate 2", "compress", "size 250M", "sharedscripts", "missingok"], "scripts": {"postrotate": "/bin/kill -HUP `cat /var/run/syslogd.pid 2> /dev/null` 2> /dev/null || true"}}]
+#######################################################################
+
+#######################################################################
+
+[masters]
+ip1.$REGION.compute.internal openshift_hostname=ip1.$REGION.compute.internal openshift_public_hostname=ip1.np.company.com
+ip2.$REGION.compute.internal openshift_hostname=ip2.$REGION.compute.internal openshift_public_hostname=ip2.np.company.com
+ip3.$REGION.compute.internal openshift_hostname=ip3.$REGION.compute.internal openshift_public_hostname=ip3.np.company.com
+
+[etcd]
+ip1.$REGION.compute.internal openshift_hostname=ip1.$REGION.compute.internal openshift_public_hostname=ip1.np.company.com
+ip2.$REGION.compute.internal openshift_hostname=ip2.$REGION.compute.internal openshift_public_hostname=ip2.np.company.com
+ip3.$REGION.compute.internal openshift_hostname=ip3.$REGION.compute.internal openshift_public_hostname=ip3.np.company.com
+
+[nodes]
+ip1.$REGION.compute.internal openshift_hostname=ip1.$REGION.compute.internal openshift_public_hostname=ip1.np.company.com openshift_node_labels="{'role': 'master'}"
+ip2.$REGION.compute.internal openshift_hostname=ip2.$REGION.compute.internal openshift_public_hostname=ip2.np.company.com openshift_node_labels="{'role': 'master'}"
+ip3.$REGION.compute.internal openshift_hostname=ip3.$REGION.compute.internal openshift_public_hostname=ip3.np.company.com openshift_node_labels="{'role': 'master'}"
+
+ip4.$REGION.compute.internal openshift_hostname=ip4.$REGION.compute.internal openshift_public_hostname=ip4.np.company.com openshift_node_labels="{'role': 'infra'}"
+ip5.$REGION.compute.internal openshift_hostname=ip5.$REGION.compute.internal openshift_public_hostname=ip5.np.company.com openshift_node_labels="{'role': 'infra'}"
+ip6.$REGION.compute.internal openshift_hostname=ip6.$REGION.compute.internal openshift_public_hostname=ip6.np.company.com openshift_node_labels="{'role': 'infra'}"
+
+ip7.$REGION.compute.internal openshift_hostname=ip7.$REGION.compute.internal openshift_public_hostname=ip7.np.company.com openshift_node_labels="{'role': 'app'}"
+ip8.$REGION.compute.internal openshift_hostname=ip8.$REGION.compute.internal openshift_public_hostname=ip8.np.company.com openshift_node_labels="{'role': 'app'}"
+ip9.$REGION.compute.internal openshift_hostname=ip9.$REGION.compute.internal openshift_public_hostname=ip9.np.company.com openshift_node_labels="{'role': 'app'}"
+
+#######################################################################
+
