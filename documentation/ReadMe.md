@@ -8,7 +8,7 @@
 
 4. Services provide **stable network identity**. Naming convention - $(service name).$(namespace).svc.cluster.local
 
-5. Routes **bypass** the service networks and access pods directly.
+5. Routes **bypass** the service networks and access pods directly. Unlike services, which use selectors to link to pod resources containing specific labels, routes link directly to the service resource name.
 
 6. DC also has the provision to define strategy to transition from current version to the new version. The Deployer POD manages the deployment i.e Deployer Pod implements the deployment Logic (calling lifecyle hooks, transitioning replication controllers and Tracking Pods).
 
@@ -149,6 +149,10 @@ BC has 2 main inputs: Most commonly used configuration is GIT for Build Input So
 
 38. oc new-app related
 ```
+*Source can be on* - Local Machine as a bunch of files in a directory, Local Git Repo, Remote GIT Repo.
+*Build Strategy* - Can be Docker or S2I, If Dockerfile is found and no strategy specified then Docker strategy is used. If Builder is not specified then its worked out based on the source checks.
+*Deployment* can be done by new-app by specifying a Docker image be it in Local or Integrated Registry or External Registry
+
 oc new-app Related: Also refer to the activity diagram
 	oc new-app can detect the source programming language. If detection fails or yeilds an incorrect result then there are a number of disambiguation parameters. We can even feed a template to create a new-app and this template should contain a definition for BuildConfig
 
@@ -227,3 +231,45 @@ oc new-app Related: Also refer to the activity diagram
 	By default a route is not created when oc new-app is executed. However when we deploy via the console a route gets created as the deployment happens via the template.
 
 ```
+39. Kubernetes API server can be extended with CRD's
+
+40. Each container within a pod runs it's own cgroup, but shares IPC, Network, and UTC (hostname) namespaces
+
+41. Default Service Accounts in a new Namespace - builder, deployer, default
+
+42. Privileged Containers - ex: Registry Pod, Builder Pods (The S2I builder containers require access to the host docker daemon to build and run containers.)
+
+43. Find an SCC that will run a Pod
+```
+oc export pod PODNAME -o yaml | oc adm policy scc-subject-review -f -
+```
+44. Like *oc rsh*: The *oc port-forward* command allows a developer's workstation to connect to network services inside a pod, even without any services or routes configured.
+
+45. Creating a Horizontal Pod Autoscaler
+```
+oc autoscale dc/myapp --min 1 --max 10 --cpu-percent=80
+```
+46. Custom Service Account
+```
+oc create serviceaccount service-account-name
+oc adm policy add-scc-to-user SCC -z service-account
+edit pod to use this service account
+```
+47. The oc patch command has the advantage of being scriptable, but the oc edit command is easier for interactive use.
+
+48. Supplemental Groups: When a process runs in Linux, it has a UID, a GID, and one or more supplemental groups. These attributes can be set for a container’s main process. 
+```
+The supplemental group IDs are typically used for controlling access to shared storage, such as NFS and GlusterFS, whereas fsGroup is used for controlling access to block storage, such as Ceph RBD and iSCSI
+
+OpenShift shared storage plug-ins mount volumes such that the POSIX permissions on the mount match the permissions on the target storage. For example, if the target storage’s owner ID is 1234 and its group ID is 5678, then the mount on the host node and in the container will have those same IDs. Therefore, the container’s main process must match one or both of those IDs in order to access the volume.
+```
+49. User Types
+```
+User Types:
+	Normal Users
+	System Users - system:admin, system:openshift-registry, and system:node:node1.example.com - anonymous system user
+	Service Accounts - system:serviceaccount:foo:builder, system:serviceaccount:default:deployer
+```
+50. User Creation: The default configuration for the Red Hat OpenShift Container Platform is to create new users automatically when they first log in. If the user credentials are accepted by the identity provider, OpenShift creates the user object.
+
+51. DenyAllPasswordIdentityProvider: The OpenShift installer uses a secure by default approach, where DenyAllPasswordIdentityProvider is the default provider. Using this provider, only the local root user on a master machine can use OpenShift client commands and APIs.
