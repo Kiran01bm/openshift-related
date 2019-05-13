@@ -273,3 +273,12 @@ User Types:
 50. User Creation: The default configuration for the Red Hat OpenShift Container Platform is to create new users automatically when they first log in. If the user credentials are accepted by the identity provider, OpenShift creates the user object.
 
 51. DenyAllPasswordIdentityProvider: The OpenShift installer uses a secure by default approach, where DenyAllPasswordIdentityProvider is the default provider. Using this provider, only the local root user on a master machine can use OpenShift client commands and APIs.
+
+52. Getting Traffic into Cluster
+```
+1. Routes - only http, https with SNI, tls with SNI and websockets
+2. NodePort - Can be TCP or UDP
+	Port numbers for NodePort attributes are restricted to the range 30000-32767 by default. This range is configurable in the OpenShift master configuration file.
+	The node port is open on all the nodes in the cluster, including the master. If the node port value is not provided, OpenShift assigns a random port in the configured range automatically.
+3. HostNetwork Pods like the Router Pods and requires higher privileges to run the Pod.
+```
