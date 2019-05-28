@@ -1,0 +1,16 @@
+apiVersion: "autoscaling.openshift.io/v1"
+kind: "ClusterAutoscaler"
+metadata:
+  name: "default"
+spec:
+  podPriorityThreshold: -10
+  resourceLimits:
+    maxNodesTotal: 9
+  scaleDown:
+    enabled: true
+    delayAfterAdd: 10s
+    delayAfterDelete: 10s
+    delayAfterFailure: 10s' 
+# oc create -f clusterAutoScalerv41.yaml -n openshift-machine-api
+# clusterautoscaler.autoscaling.openshift.io "default" created
+
