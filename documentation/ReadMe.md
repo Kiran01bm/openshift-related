@@ -282,3 +282,11 @@ User Types:
 	The node port is open on all the nodes in the cluster, including the master. If the node port value is not provided, OpenShift assigns a random port in the configured range automatically.
 3. HostNetwork Pods like the Router Pods and requires higher privileges to run the Pod.
 ```
+53. Node Maintenance - Drain.
+```
+1. Nodes must first be marked unschedulable to perform pod evacuation.
+2. Only pods backed by a replication controller can be evacuated; the replication controllers create new pods on other nodes and remove the existing pods from the specified node(s). 
+3. Bare pods, meaning those not backed by a replication controller, are unaffected by default. 
+4. You can evacuate a subset of pods by specifying a pod-selector. 
+5. Statefulsets - Lets say you have a 3 zone HA Cluster with one copy of stateful pod per AZ deployed (ex: ES where data is replicated at Application level and at Storage level its independent disks) there is no need to evacuate such pods.
+```
