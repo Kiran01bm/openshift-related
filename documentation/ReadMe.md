@@ -284,9 +284,15 @@ User Types:
 ```
 53. Node Maintenance - Drain.
 ```
-1. Nodes must first be marked unschedulable to perform pod evacuation.
+1. Nodes must first be marked unschedulable to perform pod evacuation. Cordoning the node ie patching the node with node.Spec.Unschedulable=true
 2. Only pods backed by a replication controller can be evacuated; the replication controllers create new pods on other nodes and remove the existing pods from the specified node(s). 
 3. Bare pods, meaning those not backed by a replication controller, are unaffected by default. 
 4. You can evacuate a subset of pods by specifying a pod-selector. 
 5. Statefulsets - Lets say you have a 3 zone HA Cluster with one copy of stateful pod per AZ deployed (ex: ES where data is replicated at Application level and at Storage level its independent disks) there is no need to evacuate such pods.
+```
+54. The DaemonSet controller ignores unschedulable markings, In case of a Drain - A pod that belongs to a DaemonSet will be immediately replaced. 
+55. Mirror pods are merely the corresponding read-only API resources of static pods - pods that are managed by the Kubelet, directly, without the API server managing them. Mirror pods are visible from the API server but cannot be controlled, so drain won’t delete these either.
+56. Pods not managed by Controllers are called as Bare pods. Controllers which manage pods life cycle are listed below. The k8s apimachinery package has a util function that returns the controller for a pod, or nil, if there’s no controller for it: metav1.GetControllerOf(&pod)
+```
+Ex: ReplicationController, ReplicaSet, Job, DaemonSet or StatefulSet
 ```
