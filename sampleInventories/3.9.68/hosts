@@ -83,14 +83,16 @@ openshift_cloudprovider_kind=aws
 ###################### Domain names ###########################
 openshift_master_cluster_hostname=internal.ocp.example.com
 openshift_master_cluster_public_hostname=external.ocp.example.com
-openshift_master_default_subdomain=ocp.example.com
+openshift_master_default_subdomain=ocpapps.example.com
 #######################################################################
 
 
 
 ###################### Certificates Related ###########################
-#openshift_master_named_certificates=[{"certfile": "/home/ec2-user/ocp.example.com.der", "keyfile": "/home/ec2-user/ocp.example.com.key","names": ["ocp.example.com"]}]
 openshift_master_overwrite_named_certificates=true
+openshift_master_named_certificates=[{"certfile": "/home/ec2-user/ocp.example.com.der", "keyfile": "/home/ec2-user/ocp.example.com.key","names": ["ocp.example.com"]}]
+openshift_hosted_router_certificate=[{"certfile": "/home/ec2-user/ocp.example.com.der", "keyfile": "/home/ec2-user/ocp.example.com.key","names": ["ocp.example.com"]}]
+
 #######################################################################
 
 
@@ -117,6 +119,10 @@ openshift_node_kubelet_args={'minimum-container-ttl-duration': ['30s'], 'maximum
 
 ###################### network cidr blocks for pods and services ###########################
 # Configure SDN cluster network and kubernetes service CIDR blocks.
+# Example
+# osm_cluster_network_cidr=100.64.0.0/11
+# openshift_portal_net=172.30.0.0/16
+# osm_host_subnet_length=11
 osm_cluster_network_cidr=$OCPNETWORKCIDR
 openshift_portal_net=$OCPSERVICENETWORK
 osm_host_subnet_length=11
@@ -135,17 +141,17 @@ openshift_router_selector='role=infra'
 
 
 ###################### Registry ###########################
-openshift_hosted_registry_routehost=registry.ocp.example.com
+openshift_hosted_registry_routehost=registry.ocpapps.example.com
 openshift_hosted_registry_routetermination=passthrough
 #######################################################################
 openshift_hosted_registry_selector='role=infra'
 openshift_registry_selector='role=infra'
-openshift_hosted_registry_replicas=1
+openshift_hosted_registry_replicas=3
 
 openshift_hosted_registry_storage_kind=object
 openshift_hosted_registry_storage_provider=s3
-#openshift_hosted_registry_storage_s3_accesskey=$ACCESSKEY
-#openshift_hosted_registry_storage_s3_secretkey=$SECRETKEY
+#openshift_hosted_registry_storage_s3_accesskey=$ACCESSKEY or BLANK for IAM ROLE BASED
+#openshift_hosted_registry_storage_s3_secretkey=$SECRETKEY or BLANK for IAM ROLE BASED
 openshift_hosted_registry_storage_s3_bucket=$BUCKETNAME
 openshift_hosted_registry_storage_s3_region=$REGION
 openshift_hosted_registry_storage_s3_chunksize=26214400
@@ -157,14 +163,74 @@ openshift_hosted_registry_enforcequota=true
 
 ###################### Metrics ###########################
 openshift_metrics_install_metrics=true
+openshift_metrics_duration=30
+openshift_metrics_resolution=30s
+openshift_metrics_cassandra_pvc_size=40Gi
+openshift_metrics_cassandra_storage_class_name=metricssc
 openshift_metrics_cassandra_storage_type=dynamic
+
+# Node Selector
+openshift_metrics_cassandra_nodeselector={'role': 'infra'}
+openshift_metrics_hawkular_nodeselector={'role': 'infra'}
+openshift_metrics_heapster_nodeselector={'role': 'infra'}
+
+# For HA
+openshift_metrics_cassandra_replicas=3
+openshift_metrics_hawkular_replicas=3
+
+openshift_metrics_cassandra_requests_memory=2Gi
+openshift_metrics_cassandra_limits_memory=2Gi
+
+openshift_metrics_hawkular_requests_memory=2Gi
+openshift_metrics_hawkular_limits_memory=2Gi
+
+openshift_metrics_heapster_requests_memory=2Gi
+openshift_metrics_heapster_limits_memory=2Gi
 
 
 ###################### Logging ###########################
 openshift_logging_install_logging=true
+
+# Separate cluster for Ops Logs - logs from the projects default, openshift, and openshift-infra, as well as Docker, OpenShift, and system logs from the journal
+openshift_logging_use_ops=true
+
+# Node Selector
+openshift_logging_es_nodeselector={'role': 'infra'}
+openshift_logging_kibana_nodeselector={'role': 'infra'}
+openshift_logging_curator_nodeselector={'role': 'infra'}
+openshift_logging_es_ops_nodeselector={'role': 'infra'}
+openshift_logging_kibana_ops_nodeselector={'role': 'infra'}
+openshift_logging_curator_ops_nodeselector={'role': 'infra'}
+
+# For Memory
+openshift_logging_es_memory_limit=4Gi
+openshift_logging_es_ops_memory_limit=4Gi
+
+# For HA
+openshift_logging_es_cluster_size=3
+openshift_logging_es_ops_cluster_size=3
+
+# Index to be split into three parts (shards)
+openshift_logging_es_number_of_shards=3
+
+# Number of replicas for each shard
+openshift_logging_es_number_of_replicas=2
+
+# Storage
 openshift_logging_es_pvc_dynamic=true
+openshift_logging_es_pvc_size=50Gi
+openshift_logging_elasticsearch_storage_type=pvc
+openshift_logging_elasticsearch_pvc_storage_class_name=essc
+
+openshift_logging_es_ops_pvc_dynamic=true
+openshift_logging_es_ops_pvc_size=50Gi
 
 
+# Curator
+openshift_logging_curator_default_days=7
+openshift_logging_curator_run_hour=21
+openshift_logging_curator_run_minute=30
+openshift_logging_curator_run_timezone=Australia/Sydney
 #######################################################################
 # Disable the following:
 #######################################################################
