@@ -8,7 +8,8 @@
 6. Ruby
 7. PHP
 
-# Customizing S2I Images - S2I builder images normally include assemble and run scripts, but the default behavior of those scripts may not be suitable for all users
+# Customizing S2I Images
+S2I builder images normally include assemble and run scripts, but the default behavior of those scripts may not be suitable for all users
 1. assemble
 
 ```

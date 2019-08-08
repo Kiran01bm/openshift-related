@@ -8,6 +8,7 @@
 3. When accessing Hawkular Metrics from the API, you are only able to perform reads. Writing metrics is disabled by default.
 4. If you want individual users to also be able to write metrics, you must set the openshift_metrics_hawkular_user_write_access variable to true.
 5. It is recommended to use the default configuration and only have metrics enter the system via Heapster
+6. Based on Jboss Operations Network - Java based and runs in Jboss EAP.
 
 
 ## Heapster:
@@ -24,6 +25,11 @@
 ## Cassandra:
 
 1. Backend where metrics are stored.
+2. Java Based Distributed Non-Relattional Time Series DB
+3. Shared Nothing Architecture
+4. Each Cassandra Pod will be backed by its own volume for data.
+5. 3 copies for HA.
+6. Amount of storage to use for each Cassandra volume depends not only on the expected cluster size (number of nodes and pods) but also on the resolution and duration of the time series for metrics.
 
 
 ## Horizontal Pod AutoScalers:
