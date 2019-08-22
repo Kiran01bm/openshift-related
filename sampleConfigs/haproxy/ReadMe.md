@@ -4,16 +4,16 @@
 Ensure this is subscribed to and Enabled - **rhel-7-server-rpms**
 
 ### Sample Config Gist:
-	https://gist.github.com/voduytuan/a919c408f61121b6dcc6
+	[Sample Config](https://gist.github.com/voduytuan/a919c408f61121b6dcc6)
 
 ### Configuration for Passthrough:
-	https://kb.novaordis.com/index.php/HAProxy_SSL_Pass-Through_Configuration
+	[Pass through config](https://kb.novaordis.com/index.php/HAProxy_SSL_Pass-Through_Configuration)
 
 ### Logging:
-	https://www.percona.com/blog/2014/10/03/haproxy-give-me-some-logs-on-centos-6-5/
+	[Logging](https://www.percona.com/blog/2014/10/03/haproxy-give-me-some-logs-on-centos-6-5/)
 
 ### Installation:
-	https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/load_balancer_administration/install_haproxy_example1
+	[Installation](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/load_balancer_administration/install_haproxy_example1)
 
 ```
 	# vim /etc/firewalld/services/haproxy-http.xml
