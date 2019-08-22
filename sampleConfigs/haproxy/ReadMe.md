@@ -65,6 +65,7 @@ Ensure this is subscribed to and Enabled - **rhel-7-server-rpms**
 
 ```
 ## Reverse Proxy for OCP Router
+```
 frontend ocprouter-https
   bind  10.20.10.11:443
   mode tcp
@@ -77,8 +78,9 @@ backend ocprouter
     server  ocprouter1 10.10.10.13:443 check
     server  ocprouter2 10.10.10.14:443 check
     server  ocprouter3 10.10.10.15:443 check
-
+```
 ## Reverse Proxy for OCP Master
+```
 frontend ocpmaster-https
   bind  10.20.10.11:8443
   mode tcp
