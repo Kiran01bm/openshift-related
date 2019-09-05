@@ -296,3 +296,27 @@ User Types:
 ```
 Ex: ReplicationController, ReplicaSet, Job, DaemonSet or StatefulSet
 ```
+
+54. Image Pre-reqs ie making an Image OpenShift compatible.
+```
+Image Pre-requisites: To build an image that can be run on Openshift.. Adapting docker files to run on Openshift.
+	The user account that runs a container is always a arbitrary NON-ROOT user and part of ROOT group with an arbitrary user ID. The root group does not have special permissions like a root user which minimizes the security risks.
+	Files are Folders in the that is expected to be read on written by the processes in the container should be owned by root group and have group RW permission and executables must have +X for Root Group.
+	Having the below RUN instructyion in your Dockerfile will build your image to be Openshift ready
+		ex: RUN chgrp -R 0 DIR && chmod -R g=u DIR or (chmod -R g+rwX DIR) -- This is to allow users in the root group to access the files ie RWX
+	Processes running in the container should not listen on priveleged ports as the processes are not running as priveleged users.
+
+	* g=u makes the groups permission same as the user/owner permission.
+
+Running Containers as root user or UID=0 using SCC (Security Context Constraints): SCC = anyuid
+	All containers created by Openshift runs with a a default scc i.e "restricted" which ignores the USER instruction set in the container and runs the container as a random non-root user.
+	To allow the container to run as flexible users we need to run with SCC set to "anyuid". To do this:
+		- Create a new service account and add it to an appropriate SCC and then change the DC to use this Service Account
+			* oc create serviceaccount ACCOUNTNAME
+			* oc adm policy add-scc-to-user anyuid -z SERVICEACCOUNT_NAME (SCC control what actions a Pod can perform on which resources.)
+			* oc patch dc/DCNAME --patch '{"spec": {"template":{"spec":{"serviceaccountname" : "SERVICEACCOUNT_NAME"}}}}'
+		- Service account is the identity for a Pod on OCP.
+		- All Pods run with a default service account unless the Pod or its DC is configured otherwise.
+	
+SCC control what actions a Pod can perform on which resources. You can also use security context constraints to control the actions that a pod can perform and what it has the ability to access. 
+```
