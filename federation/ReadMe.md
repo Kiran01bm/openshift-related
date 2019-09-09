@@ -2,8 +2,8 @@
 
 ## KubeFed Control Plane
 
-### Logs
-![Controller logs](./kubefedControlPlane.md)
+### Federation Set-up
+[Federation Setup Related](./kubefedControlPlane.md)
 
 ## Recordings
 
