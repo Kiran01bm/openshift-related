@@ -10,7 +10,7 @@
 ### Example for Placement Overrides
 [![Placement Overrides](https://asciinema.org/a/GEAPcQoqrvrZxTqgOgLK1ZiBx.png)](https://asciinema.org/a/GEAPcQoqrvrZxTqgOgLK1ZiBx)
 
-### Example for Federated<Kind> Overrides
+### Example for FederatedKind Overrides
 [![Federated Kind Overrides](https://asciinema.org/a/bI79EbCPZ2YEokbUAlQjI4kJ1.png)](https://asciinema.org/a/bI79EbCPZ2YEokbUAlQjI4kJ1)
 
 ### Federation Setup Example
