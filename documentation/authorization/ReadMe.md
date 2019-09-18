@@ -4,6 +4,10 @@
 1. Cluster RBAC: Roles and bindings that are applicable across all projects
 2. Local RBAC:: Roles and bindings that are scoped to a given project
 
+## Roles
+1. Local Roles
+2. Cluster Roles
+
 ## Rolebinding
 1. Local role bindings can reference both cluster and local roles
 2. Cluster role bindings can only reference cluster roles
