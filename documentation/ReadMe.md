@@ -17,6 +17,29 @@
 8. oc new-app creates application by specifying source code, image, and/or template. New app creation workflow/logic is implemented by the **Builder Pod**
 
 9. For Quotas (be it single project Quota or Multiproject quota defined by a ClusterResourceQuota) to be effective, you must create Limit Ranges which handles the Default problem very well
+```
+Both LimitRange and ResourceQuota are Project Scoped.
+
+OpenShift manages quotas for the use of objects and compute resources in a cluster by using a ResourceQuota object, or simply a quota. The ResourceQuota object specifies hard resource usage limits for a project. All attributes of a quota are optional, meaning that any resource that is not restricted by a quota can be consumed without bounds.
+
+Quota attributes can track either the resource requests or the resource limits for all pods in the project. By default, quota attributes tracks resource requests. To track resource limits instead, prefix the compute resource name with limits, for example, limits.cpu.
+
+ResourceQuota constraints are applied for the project as a whole.
+
+Object-Quota and Compute-Quota enforcement:
+If a modification to a project exceeds the quota for an object count, the action is denied by the server, and an appropriate error message is returned to the user. If the modification exceeds
+the quota for a compute resource, however, the operation does not fail immediately; OpenShift retries the operation several times, giving the administrator an opportunity to increase the quota or to perform another corrective action, such as bringing a new node online.
+
+Limit Range:
+A LimitRange resource, also called a limit, defines the default, minimum, and maximum values for compute resource requests and limits for a single pod or for a single container defined inside the project. A resource request or limit for a pod is the sum of its containers.
+
+To understand the difference between a limit range and a resource quota resource, consider that a limit range defines valid ranges and default values for a single pod, while a resource quota defines only top values for the sum of all pods in a project. A cluster administrator concerned about resource usage in an OpenShift cluster usually defines both limits and quotas for a project.
+
+Avoid setting LimitRange constraints that are too high, or ResourceQuota constraints that are too low. Violation of LimitRange constraints prevents pod from being created, showing clear error messages. Violation of ResourceQuota constraints prevents a pod from being scheduled to any node. The pod might be created but remain in the pending state.
+
+ClusterResourceQuota aka MultiProject Quota:
+It is not recommended to have a single cluster resource quota that matches over a hundred projects. This is to avoid large locking overheads. When resources in a project are created or updated, the project is locked while searching for all applicable resource quotas.
+```
 
 10. When you **delete the StatefulSet**, it does not touch the persistent volumes nor the service, so we have to take care of that ourselves
 ```
