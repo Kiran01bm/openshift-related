@@ -7,6 +7,18 @@
 ## Roles
 1. Local Roles
 2. Cluster Roles
+```
+Cluster Level Roles:
+	cluster-admin - Full Cluster Admin
+	cluster-status - Read-Only
+	self-provisioner - Is a Cluster Role and Not Project level Role. This allows users to create Projects.
+
+Local Roles:
+        view - Cannot make any modifications but can be most objects in a Project. Cannot view Roles or Bindings.
+	basic-user - Read access to projects and can get basic information about users and projects.
+	edit - CRUD on common app resources like - Services, DC, Secrets etc but no access to Management resources like Quotas, Limit Ranges etc - Granted to Developers.
+	admin - Full access including granting access to another user to the project
+```
 
 ## Rolebinding
 1. Local role bindings can reference both cluster and local roles

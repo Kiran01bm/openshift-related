@@ -15,6 +15,10 @@
 7. OCP Routers Support HTTPS with SNI and TLS with SNI.
 
 8. oc new-app creates application by specifying source code, image, and/or template. New app creation workflow/logic is implemented by the **Builder Pod**
+```
+oc new-app with docker image does not create BC - It creates DC, Service, IS
+oc new-app with source code creates - BC, DC< Service, IS
+```
 
 9. For Quotas (be it single project Quota or Multiproject quota defined by a ClusterResourceQuota) to be effective, you must create Limit Ranges which handles the Default problem very well
 ```
@@ -343,3 +347,4 @@ Running Containers as root user or UID=0 using SCC (Security Context Constraints
 	
 SCC control what actions a Pod can perform on which resources. You can also use security context constraints to control the actions that a pod can perform and what it has the ability to access. 
 ```
+55. 
