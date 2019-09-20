@@ -347,4 +347,4 @@ Running Containers as root user or UID=0 using SCC (Security Context Constraints
 	
 SCC control what actions a Pod can perform on which resources. You can also use security context constraints to control the actions that a pod can perform and what it has the ability to access. 
 ```
-55. 
+55. By default, the cluster installation process automatically creates Default Image Streams and Quick Start Templates in the openshift project, which is a default project to which all users have view access.
