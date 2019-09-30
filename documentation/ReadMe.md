@@ -8,7 +8,7 @@
 
 4. Services provide **stable network identity**. Naming convention - $(service name).$(namespace).svc.cluster.local
 
-5. Routes **bypass** the service networks and access pods directly. Unlike services, which use selectors to link to pod resources containing specific labels, routes link directly to the service resource name.
+5. Routes **bypass** the service networks and access pods directly. Unlike services, which use selectors to link to pod resources containing specific labels, routes link directly to the service resource name. The router queries the named Service for endpoints and registers valid endpoints for load-balancing. 
 
 6. DC also has the provision to define strategy to transition from current version to the new version. The Deployer POD manages the deployment i.e Deployer Pod implements the deployment Logic (calling lifecyle hooks, transitioning replication controllers and Tracking Pods).
 
@@ -164,7 +164,7 @@ BC has 2 main inputs: Most commonly used configuration is GIT for Build Input So
 	- Build Triggers: oc new-app
 		* Image change trigger - Triggers when parent image changes. If a registry does not support notification then prediodically run "oc import-image"
 		* Config change trigger - When build config changes it starts new application builds
-		* Webhook triggers
+		* Webhook triggers - Can be triggered from source ex: Commit on Source Code repo
 		* Generic/Custom
 
 	- Webhook Triggers:
@@ -324,7 +324,7 @@ User Types:
 Ex: ReplicationController, ReplicaSet, Job, DaemonSet or StatefulSet
 ```
 
-54. Image Pre-reqs ie making an Image OpenShift compatible.
+57. Image Pre-reqs ie making an Image OpenShift compatible.
 ```
 Image Pre-requisites: To build an image that can be run on Openshift.. Adapting docker files to run on Openshift.
 	The user account that runs a container is always a arbitrary NON-ROOT user and part of ROOT group with an arbitrary user ID. The root group does not have special permissions like a root user which minimizes the security risks.
@@ -347,4 +347,48 @@ Running Containers as root user or UID=0 using SCC (Security Context Constraints
 	
 SCC control what actions a Pod can perform on which resources. You can also use security context constraints to control the actions that a pod can perform and what it has the ability to access. 
 ```
-55. By default, the cluster installation process automatically creates Default Image Streams and Quick Start Templates in the openshift project, which is a default project to which all users have view access.
+58. By default, the cluster installation process automatically creates Default Image Streams and Quick Start Templates in the openshift project, which is a default project to which all users have view access.
+59. NFS based fileshares must have the following:
+```
+a. Owned by the nfsnobody user and group - As pods run with a random user id
+b. Having rwx------ permissions (expressed as 0700 using octal).
+c. Exported using the all_squash option.
+```
+59. Scheduler configuration file
+```
+/etc/origin/master/scheduler.json
+```
+60. Default node selector at namespace level ex: default namespace to target workloads to Infra nodes.To configure a default node selector for a project, add an annotation to the namespace resource with the openshift.io/node-selector key.
+```
+oc annotate --overwrite namespace default \ openshift.io/node-selector='region=infra'
+```
+61. Roles related to registry
+```
+system:registry
+This role allows a user to pull images from the internal registry.
+
+system:image-builder
+This role allows a user to push images to the internal registry.
+
+system:image-puller
+If the application pod and the container image are in the same project, permission is automatically granted. However, if they are in different projects, the service accounts in the application project require the system:image-puller role from the container image project.
+
+oc policy add-role-to-group -n image_project system:image-puller \ system:serviceaccounts:projectname
+
+```
+62. Build and Deployment hooks
+```
+Build Hook: Post commit build hook is executed after a build has committed an image but before the image has been pushed to the registry. This hook can be used to run tests before its available in the registry for consumption or before triggering the image change triggers.
+
+Deployment Hook: Pre, Mid and Post.
+
+```
+63. Building custom base images
+```
+To build our own custom container image, we can start with a base operating system image (such as rhel7). To build and run applications requiring certain development tools and runtime libraries, Red Hat SCL provides a number of container images, featuring tools such as Node.js (rhscl/nodejs-6- rhel7), Ruby on Rails (rhscl/ror-42-rhel7), and Python (rhscl/python-35-rhel7).
+```
+64. Logs from Containers
+```
+The container runtime collects the standard output of the containers inside a pod and stores them as pod logs.
+If a containerized application saves its log events to files, either in ephemeral container storage or a persistent volume, those logs are not displayed by the web console, nor by the oc logs command.
+``
