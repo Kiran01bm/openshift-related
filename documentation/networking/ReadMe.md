@@ -1,6 +1,6 @@
 ## General Notes
 
-SDN MTU - /etc/origin/node/node-config.yaml 
+SDN MTU and Plugin Type - /etc/origin/node/node-config.yaml 
 
 ```
 networkConfig:
